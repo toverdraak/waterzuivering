@@ -36,7 +36,8 @@ public class WaterZuivering extends Application {
     double[] algenRij = new double[AANTAL];
     double[] medicijnrestenRij = new double[AANTAL];
     double[] microplasticsRij = new double[AANTAL];
-
+    double[] metalenRij = new double[AANTAL];
+    String[] zuiveringsMethode = new String[AANTAL];
     Map<String, Double> concentratieStoffen = new HashMap<>();
     Map<String, Double> voorkomen = new HashMap<>();
 
@@ -61,13 +62,16 @@ public class WaterZuivering extends Application {
         Series<String, Double> algenSeries = new Series<>();
         Series<String, Double> medicijnrestenSeries = new Series<>();
         Series<String, Double> microplasticsSeries = new Series<>();
+        Series<String, Double> metalenSeries = new Series<>();
+        
         for (int i = 0; i < AANTAL; i++) {
-            bacterieSeries.getData().add(new XYChart.Data("STAP" + i, bacterieRij[i]));
-            fosforSeries.getData().add(new XYChart.Data("STAP" + i, fosforRij[i]));
-            stikstofSeries.getData().add(new XYChart.Data("STAP" + i, stikstofRij[i]));
-            algenSeries.getData().add(new XYChart.Data("STAP" + i, algenRij[i]));
-            medicijnrestenSeries.getData().add(new XYChart.Data("STAP" + i, medicijnrestenRij[i]));
-            microplasticsSeries.getData().add(new XYChart.Data("STAP" + i, microplasticsRij[i]));
+            bacterieSeries.getData().add(new XYChart.Data(zuiveringsMethode[i], bacterieRij[i]));
+            fosforSeries.getData().add(new XYChart.Data(zuiveringsMethode[i], fosforRij[i]));
+            stikstofSeries.getData().add(new XYChart.Data(zuiveringsMethode[i], stikstofRij[i]));
+            algenSeries.getData().add(new XYChart.Data(zuiveringsMethode[i], algenRij[i]));
+            medicijnrestenSeries.getData().add(new XYChart.Data(zuiveringsMethode[i], medicijnrestenRij[i]));
+            microplasticsSeries.getData().add(new XYChart.Data(zuiveringsMethode[i], microplasticsRij[i]));
+            metalenSeries.getData().add(new XYChart.Data(zuiveringsMethode[i], metalenRij[i]));
                         
         }
         bacterieSeries.setName("Bacterie");
@@ -76,12 +80,14 @@ public class WaterZuivering extends Application {
         algenSeries.setName("Algen");
         medicijnrestenSeries.setName("Medicijnresten");
         microplasticsSeries.setName("Microplastics");
+        metalenSeries.setName("Metalen");
         answer.add(bacterieSeries);
         answer.add(fosforSeries);
         answer.add(stikstofSeries);
         answer.add(algenSeries);
         answer.add(medicijnrestenSeries);
         answer.add(microplasticsSeries);
+        answer.add(metalenSeries);
         return answer;
     }
 
@@ -108,6 +114,8 @@ public class WaterZuivering extends Application {
         algenRij[0] = 100;
         medicijnrestenRij[0] = 100;
         microplasticsRij[0] = 100;
+        metalenRij[0] = 100;
+        zuiveringsMethode[0] = "Begin";
         voorkomen.put("bacterien", 1e9);          // 1 × 10^9
         voorkomen.put("stikstof", 2.15e19);       // 2.15 × 10^19
         voorkomen.put("fosfor", 1.94e19);         // 1.94 × 10^19
@@ -124,7 +132,13 @@ public class WaterZuivering extends Application {
         System.err.println("");
         System.err.println("");
         System.err.println("eerste zuivering");
-        filtratie(1);
+      
+//        filtratie(1);
+//        coagulatieFlocculatie(1);
+        neutralisatie(1);
+//        microOrganisme(1);
+
+
         updateMap();
         printMap();
         System.err.println("absoluut voorkomen");
@@ -132,19 +146,34 @@ public class WaterZuivering extends Application {
         System.err.println("______________________________");
         System.err.println("");
         System.err.println("tweede zuivering");
-        coagulatieFlocculatie(2);
+
+        filtratie(2);
+//        coagulatieFlocculatie(2);
+//        neutralisatie(2);
+//        microOrganisme(2);
+
         updateMap();
         printMap();
         System.err.println("_________________________________");
         System.err.println("");
         System.err.println("derde zuivering");
-        neutralisatie(3);
+
+//        filtratie(3);
+        coagulatieFlocculatie(3);
+//        neutralisatie(3);
+//        microOrganisme(3);
+
         updateMap();
         printMap();
         System.err.println("_______________________________");
         System.err.println("");
         System.err.println("vierde zuivering");
+       
+//        filtratie(4);
+//        coagulatieFlocculatie(4);
+//        neutralisatie(4);
         microOrganisme(4);
+
         updateMap();
         printMap();
         System.err.println("absoluut voorkomen");
@@ -153,12 +182,18 @@ public class WaterZuivering extends Application {
     }
 
     public void filtratie(int step) {
+        zuiveringsMethode [step] = "Filtratie";
         stikstof = stikstof - 5 * stikstof / 100;
         stikstofRij[step] = stikstofRij[step-1] - 5. *stikstofRij[step-1]/100.;
         fosfor = fosfor - 10 * fosfor / 100;
         fosforRij[step] = fosforRij[step-1] - 10. *fosforRij[step-1]/100.;
         bacterie = bacterie - 30 * bacterie / 100;
-        bacterieRij[step] = bacterieRij[step - 1] - 30 * bacterieRij[0] / 100;
+//        System.err.println("  ");
+//        System.err.println("");
+//        System.err.println("");
+//        System.err.println("");
+//        System.err.println("bacterierij[0] = "+bacterieRij[0]);
+        bacterieRij[step] = bacterieRij[step - 1] - 30. * bacterieRij[step-1] / 100;
         algen = algen - 50 * algen / 100;
         algenRij[step] = algenRij[step-1] - 50. *algenRij[step-1]/100.;
         medicijnresten = medicijnresten - 10 * medicijnresten / 100;
@@ -166,9 +201,11 @@ public class WaterZuivering extends Application {
         microplastics = microplastics - 30 * microplastics / 100;
         microplasticsRij[step] = microplasticsRij[step-1] - 30. *microplasticsRij[step-1]/100.;
         metalen = metalen - 10 * metalen / 100;
+        metalenRij[step] = metalenRij[step-1] - 10. *metalenRij[step-1]/100.;
     }
 
     public void coagulatieFlocculatie(int step) {
+        zuiveringsMethode [step] = "Coagulatie/flocculatie";
         stikstof = stikstof - 15 * stikstof / 100;
         stikstofRij[step] = stikstofRij[step-1] - 15. *stikstofRij[step-1]/100.;
         fosfor = fosfor - 70 * fosfor / 100;
@@ -182,9 +219,11 @@ public class WaterZuivering extends Application {
         microplastics = microplastics - 80 * microplastics / 100;
         microplasticsRij[step] = microplasticsRij[step-1] - 80. *microplasticsRij[step-1]/100.;
         metalen = metalen - 65 * metalen / 100;
+        metalenRij[step] = metalenRij[step-1] - 65. *metalenRij[step-1]/100.;
     }
 
     public void neutralisatie(int step) {
+        zuiveringsMethode [step] = "Neutralisatie";
         pH = 7;
         stikstofRij[step] = stikstofRij[step-1] - 0. *stikstofRij[step-1]/100.;
         fosforRij[step] = fosforRij[step-1] - 0. *fosforRij[step-1]/100.;
@@ -192,9 +231,11 @@ public class WaterZuivering extends Application {
         algenRij[step] = algenRij[step-1] - 0. *algenRij[step-1]/100.;
         medicijnrestenRij[step] = medicijnrestenRij[step-1] - 0. *medicijnrestenRij[step-1]/100.;
         microplasticsRij[step] = microplasticsRij[step-1] - 0. *microplasticsRij[step-1]/100.;
+        metalenRij[step] = metalenRij[step-1] - 0. *metalenRij[step-1]/100.;
     }
 
     public void microOrganisme(int step) {
+        zuiveringsMethode [step] = "microOrganismes";
         stikstof = stikstof - 50 * stikstof / 100;
         stikstofRij[step] = stikstofRij[step-1] - 50. *stikstofRij[step-1]/100.;
         fosfor = fosfor - 40 * fosfor / 100;
@@ -206,6 +247,7 @@ public class WaterZuivering extends Application {
         metalen = metalen - 5 * metalen / 100;
         bacterieRij[step] = bacterieRij[step - 1] * 1;
         microplasticsRij[step] = microplasticsRij[step-1] - 0. *microplasticsRij[step-1]/100.;
+        metalenRij[step] = metalenRij[step-1] - 5. *metalenRij[step-1]/100.;
     }
 
     public void verdamping(int step) {
@@ -248,7 +290,7 @@ public class WaterZuivering extends Application {
 
     void printBacterie() {
         for (int i = 0; i < AANTAL; i++) {
-            System.err.println("Bacterie[" + i + "] = " + bacterieRij[i]+ " |   Fosfor["+ i + "] = " + fosforRij[i]+ " |     Stikstof["+ i + "] = " + stikstofRij[i] + " |       Algen["+ i + "] = " + algenRij[i]  + " |      Medicijnresten["+ i + "] = " + medicijnrestenRij[i]+ " |      Microplastics["+ i + "] = " + microplasticsRij[i]);
+            System.err.println("Bacterie[" + i + "] = " + bacterieRij[i]+ " |   Fosfor["+ i + "] = " + fosforRij[i]+ " |     Stikstof["+ i + "] = " + stikstofRij[i] + " |       Algen["+ i + "] = " + algenRij[i]  + " |      Medicijnresten["+ i + "] = " + medicijnrestenRij[i]+ " |      Microplastics["+ i + "] = " + microplasticsRij[i]+ " |      Metalen["+ i + "] = " + metalenRij[i]);
         }
     }
 
