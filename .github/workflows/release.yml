@@ -43,7 +43,7 @@ jobs:
           call ren ${{ env.INSTALL_DIR }}\WaterZuivering-${{ env.APP_VERSION }}.msi WaterZuivering-${{ env.PROJECT_VERSION }}.msi
           call dir ${{ env.INSTALL_DIR }}
         env:
-          MAIN_CLASS: com.oracle.javafx.scenebuilder.app.SceneBuilderApp
+          MAIN_CLASS: merlijnsmislukkingen.waterzuivering.WaterZuivering 
           JAVAFX_HOME: D:\javafx-jmods-23.0.2
           JPACKAGE_HOME: ${{ env.JAVA_HOME }}
           PROJECT_VERSION: 1.0
