@@ -1,6 +1,4 @@
-echo %JAVA_HOME%\bin\jdeps --module-path %JAVAFX_HOME% --print-module-deps --ignore-missing-deps %GITHUB_WORKSPACE%/target/WaterZuivering-%APP_VERSION%.jar
-%JAVA_HOME%\bin\jdeps --module-path %JAVAFX_HOME% --print-module-deps --ignore-missing-deps %GITHUB_WORKSPACE%/target/WaterZuivering-%APP_VERSION%.jar
-
+echo APP_VERSION = %APP_VERSION%
 
 for /F %%i in ('%JAVA_HOME%\bin\jdeps --module-path %JAVAFX_HOME% --print-module-deps --ignore-missing-deps %GITHUB_WORKSPACE%/target/WaterZuivering-1.0.jar') do SET JDEPS_MODULES=%%i
 
@@ -19,8 +17,7 @@ REM set MODULES=java.desktop,java.logging,java.naming,java.prefs,java.security.j
 %JPACKAGE_HOME%\bin\jpackage ^
 --app-version %APP_VERSION% ^
 --input target ^
---license-file LICENSE.txt ^
---main-jar WaterZuivering-%APP_VERSION%-all.jar ^
+--main-jar WaterZuivering-%APP_VERSION%.jar ^
 --main-class %MAIN_CLASS% ^
 --name WaterZuivering ^
 --description "Waterzuivering" ^
