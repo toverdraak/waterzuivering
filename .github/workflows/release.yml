@@ -1,6 +1,8 @@
 name: Release
 
 on:
+  push:
+    branches: [ main ]
   workflow_dispatch:
 
 env:
@@ -34,7 +36,7 @@ jobs:
         run: |
           call mvn -B -ntp package -Dmaven.test.skip=true
         env:
-          APP_VERSION: ${{ inputs.app-version }}
+          APP_VERSION: 1.0
 
       - name: Create Bundle using JPackage
         shell: cmd
