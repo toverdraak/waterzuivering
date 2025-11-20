@@ -48,8 +48,8 @@ jobs:
           MAIN_CLASS: merlijnsmislukkingen.waterzuivering.WaterZuivering 
           JAVAFX_HOME: D:\javafx-jmods-23.0.2
           JPACKAGE_HOME: ${{ env.JAVA_HOME }}
-          PROJECT_VERSION: 1.0
-          APP_VERSION: 1.0
+          PROJECT_VERSION: "1.0"
+          APP_VERSION: "1.0"
           INSTALL_DIR: target\install
 
 
