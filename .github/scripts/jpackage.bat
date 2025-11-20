@@ -1,4 +1,4 @@
-for /F %%i in ('%JAVA_HOME%\bin\jdeps --module-path %JAVAFX_HOME% --print-module-deps --ignore-missing-deps %GITHUB_WORKSPACE%/target/WaterZuivering-%APP_VERSION%-all.jar') do SET JDEPS_MODULES=%%i
+for /F %%i in ('%JAVA_HOME%\bin\jdeps --module-path %JAVAFX_HOME% --print-module-deps --ignore-missing-deps %GITHUB_WORKSPACE%/target/WaterZuivering-%APP_VERSION%.jar') do SET JDEPS_MODULES=%%i
 
 REM jdeps doesn't include JavaFX modules in Windows
 set JAVAFX_MODULES=javafx.fxml,javafx.media,javafx.swing,javafx.web
