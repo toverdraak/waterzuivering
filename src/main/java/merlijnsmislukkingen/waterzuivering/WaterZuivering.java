@@ -11,7 +11,13 @@ import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.chart.*;
 import javafx.scene.chart.XYChart.Series;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -40,6 +46,9 @@ public class WaterZuivering extends Application {
     String[] zuiveringsMethode = new String[AANTAL];
     Map<String, Double> concentratieStoffen = new HashMap<>();
     Map<String, Double> voorkomen = new HashMap<>();
+    private double BACTERIE_FILTRATIE = 30;
+    Button recalc = new Button("Herbereken");
+    TextField bacterieFilterInput;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -49,9 +58,33 @@ public class WaterZuivering extends Application {
         lineChart.setData(getChartData());
         lineChart.setTitle("zuivering");
         StackPane root = new StackPane();
-        root.getChildren().add(lineChart);
+//        HBox hbox = new HBox();
+//        hbox.getChildren().add(lineChart);
+        lineChart.setPrefWidth(1200);
+
+        recalc.setOnAction(e -> {
+            BACTERIE_FILTRATIE = Double.parseDouble(bacterieFilterInput.getText());
+            calculate();
+            lineChart.setData(getChartData());
+        });
+        VBox configBox = createConfigBox();
+        SplitPane sp = new SplitPane(lineChart, configBox);
+//        hbox.getChildren().add(configBox);
+        root.getChildren().add(sp);
         stage.setScene(new Scene(root, 800, 500));
         stage.show();
+    }
+
+    public VBox createConfigBox() {
+        VBox configBox = new VBox();
+
+        Label bacterieFilterLabel = new Label("bacterie filtratie");
+        bacterieFilterInput = new TextField(Double.toString(BACTERIE_FILTRATIE));
+        bacterieFilterInput.setPrefWidth(50);
+        HBox bact = new HBox(bacterieFilterLabel, bacterieFilterInput);
+        configBox.getChildren().addAll(bact, recalc);
+        configBox.setPrefWidth(200);
+        return configBox;
     }
 
     public ObservableList<XYChart.Series<String, Double>> getChartData() {
@@ -98,6 +131,10 @@ public class WaterZuivering extends Application {
     }
 
     public WaterZuivering() {
+        calculate();
+    }
+
+    public void calculate() {
 
 //        concentratieStoffen.put("stikstof", stikstof);
 //        concentratieStoffen.put("fosfor", fosfor);
@@ -132,12 +169,11 @@ public class WaterZuivering extends Application {
         System.err.println("");
         System.err.println("");
         System.err.println("eerste zuivering");
-      
+
 //        filtratie(1);
 //        coagulatieFlocculatie(1);
         neutralisatie(1);
 //        microOrganisme(1);
-
 
         updateMap();
         printMap();
@@ -187,13 +223,13 @@ public class WaterZuivering extends Application {
         stikstofRij[step] = stikstofRij[step-1] - 5. *stikstofRij[step-1]/100.;
         fosfor = fosfor - 10 * fosfor / 100;
         fosforRij[step] = fosforRij[step-1] - 10. *fosforRij[step-1]/100.;
-        bacterie = bacterie - 30 * bacterie / 100;
+        bacterie = bacterie - BACTERIE_FILTRATIE * bacterie / 100;
 //        System.err.println("  ");
 //        System.err.println("");
 //        System.err.println("");
 //        System.err.println("");
 //        System.err.println("bacterierij[0] = "+bacterieRij[0]);
-        bacterieRij[step] = bacterieRij[step - 1] - 30. * bacterieRij[step-1] / 100;
+        bacterieRij[step] = bacterieRij[step - 1] - BACTERIE_FILTRATIE * bacterieRij[step-1] / 100;
         algen = algen - 50 * algen / 100;
         algenRij[step] = algenRij[step-1] - 50. *algenRij[step-1]/100.;
         medicijnresten = medicijnresten - 10 * medicijnresten / 100;
