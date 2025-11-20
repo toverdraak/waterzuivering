@@ -2,7 +2,7 @@ echo %JAVA_HOME%\bin\jdeps --module-path %JAVAFX_HOME% --print-module-deps --ign
 %JAVA_HOME%\bin\jdeps --module-path %JAVAFX_HOME% --print-module-deps --ignore-missing-deps %GITHUB_WORKSPACE%/target/WaterZuivering-%APP_VERSION%.jar
 
 
-for /F %%i in ('%JAVA_HOME%\bin\jdeps --module-path %JAVAFX_HOME% --print-module-deps --ignore-missing-deps %GITHUB_WORKSPACE%/target/WaterZuivering-%APP_VERSION%.jar') do SET JDEPS_MODULES=%%i
+for /F %%i in ('%JAVA_HOME%\bin\jdeps --module-path %JAVAFX_HOME% --print-module-deps --ignore-missing-deps %GITHUB_WORKSPACE%/target/WaterZuivering-1.0.jar') do SET JDEPS_MODULES=%%i
 
 echo JDEPS_MODULES = %JDEPS_MODULES%
 
