@@ -48,7 +48,7 @@ jobs:
           JPACKAGE_HOME: ${{ env.JAVA_HOME }}
           PROJECT_VERSION: 1.0
           APP_VERSION: 1.0
-          INSTALL_DIR: app\target\install
+          INSTALL_DIR: target\install
 
 
       - name: Upload Artifact
