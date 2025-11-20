@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+env:
+  JAVA_RELEASE: '25'
+  JAVA_VERSION: 'latest'
+  JAVAFX_VERSION: '25'
+
+jobs:
+
+  windows-bundles:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: oracle-actions/setup-java@v1.4.0
+        with:
+          website: jdk.java.net
+          release: ${{ env.JAVA_RELEASE }}
+          version: ${{ env.JAVA_VERSION }}
+
+      - name: Setup JavaFX
+        id: javafx
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri https://download2.gluonhq.com/openjfx/23.0.2/openjfx-23.0.2_windows-x64_bin-jmods.zip -OutFile D:\openjfx-23.0.2_windows-x64_bin-jmods.zip
+          Expand-Archive -Force D:\openjfx-23.0.2_windows-x64_bin-jmods.zip D:\
+
+      - name: Build and package JAR
+        shell: cmd
+        run: |
+          call mvn -B -ntp package -Dmaven.test.skip=true
+        env:
+          APP_VERSION: 1.0
+
+      - name: Create Bundle using JPackage
+        shell: cmd
+        run: |
+          call .github\scripts\jpackage.bat
+          call ren ${{ env.INSTALL_DIR }}\WaterZuivering-${{ env.APP_VERSION }}.msi WaterZuivering-${{ env.PROJECT_VERSION }}.msi
+          call dir ${{ env.INSTALL_DIR }}
+        env:
+          MAIN_CLASS: merlijnsmislukkingen.waterzuivering.WaterZuivering 
+          JAVAFX_HOME: D:\javafx-jmods-23.0.2
+          JPACKAGE_HOME: ${{ env.JAVA_HOME }}
+          PROJECT_VERSION: "1.0"
+          APP_VERSION: "1.0"
+          INSTALL_DIR: target\install
+
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WaterZuivering-1.0.msi
+          path: target/install/*.msi
+
+
+
